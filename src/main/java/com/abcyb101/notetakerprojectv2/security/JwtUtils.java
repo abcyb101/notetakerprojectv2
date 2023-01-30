@@ -8,33 +8,49 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+@Component
 public class JwtUtils {
 	
 	@Value("${app.notetaker.secret}")//application properties
 	private String secret;
 	//private static final String SECRET; //cannot use static final, because injections are on-the-spot initializers. Workarounds possible, but discouraged
 
+	/*
+	public String generateJwtToken(Authentication authentication) {
+
+	    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+	    return Jwts.builder()
+	        .setSubject((userPrincipal.getUsername()))
+	        .setIssuedAt(new Date())
+	        .setExpiration(Date.from(
+                    Instant.now().plus(15, ChronoUnit.DAYS))
+            )
+	        .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+	        .compact();
+	  }
+	  */
 	
 	public String generateJwtToken(Authentication authentication) {
-		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-		
-		return Jwts
-                .builder()
-                .setSubject(userPrincipal.getUsername())//String
-                //.setIssuer("")//host
-                .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(
-                        Instant.now().plus(15, ChronoUnit.DAYS))
-                )
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)//one could hardcode this here so that instead of the getSignInKey method you grab it from here [private String secret;] - but this is the more secure way
-                .compact();
-	}
+
+	    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+	    return Jwts.builder()
+	        .setSubject((userPrincipal.getUsername()))
+	        .setIssuedAt(new Date())
+	        .setExpiration(Date.from(
+                    Instant.now().plus(15, ChronoUnit.DAYS))
+            )
+	        .signWith(SignatureAlgorithm.HS512, secret)
+	        .compact();
+	  }
 	
 	private Key getSignInKey() { 
         return Keys.hmacShaKeyFor(secret.getBytes());
@@ -60,11 +76,16 @@ public class JwtUtils {
                 .getBody();
     }
 	
-	public boolean isTokenValid(String token, UserDetails userDetails) {
+	public boolean validateJwtToken(String authToken) {
+	      Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
+	      return true;
+	}
+	
+	public boolean isTokenValid(String token, String usernameCompare) {//UserDetails userDetails) {
 		//deprecated! Also requires try/catch
 		//return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (username.equals(usernameCompare)) && !isTokenExpired(token);
     }
 	
 	private boolean isTokenExpired(String token) {
