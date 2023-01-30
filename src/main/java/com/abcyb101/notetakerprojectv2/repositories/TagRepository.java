@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.abcyb101.notetakerprojectv2.models.Note;
 import com.abcyb101.notetakerprojectv2.models.Tag;
 
 @Repository

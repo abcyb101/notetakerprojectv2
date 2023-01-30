@@ -9,11 +9,11 @@ import com.abcyb101.notetakerprojectv2.models.Note;
 import com.abcyb101.notetakerprojectv2.models.Tag;
 import com.abcyb101.notetakerprojectv2.repositories.TagRepository;
 
-public class TagSynchronizer {
-	
+public class TagSynchronizer {//unecessary complexity
+/*	
 	@Autowired
 	TagRepository tagRepository;
-/*	
+	
 	public void addTagToNote(String tagname, Note note) {
 		Tag t = tagRepository.findByName(tagname).orElse(null);
 		if (t == null) {
