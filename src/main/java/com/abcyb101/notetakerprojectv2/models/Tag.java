@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tags")
-public class Tag {//not really needed, because unnecessary complexity
+public class Tag {//not really needed, because unnecessary complexity. Consider refactor
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
