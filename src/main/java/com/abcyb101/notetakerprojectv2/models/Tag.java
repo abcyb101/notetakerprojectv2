@@ -3,6 +3,7 @@ package com.abcyb101.notetakerprojectv2.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,33 +18,38 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tags")
-public class Tag {
+public class Tag {//not really needed, because unnecessary complexity
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private long id;
 	
 	@Column(length = 20, unique = true)
 	private String name;
-	/*
-	@ManyToMany(fetch = FetchType.LAZY)
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)//cascade = CascadeType.ALL required, it seems
 	@JoinTable(name = "tag_notes",
 		joinColumns = @JoinColumn(name = "tag_id"),
 		inverseJoinColumns = @JoinColumn(name = "note_id"))
 	private Set<Note> notes = new HashSet<>();
-	*/
+	
 	public Tag() {
-		
+		super();
+	}
+	
+	public Tag(String name, Note note) {
+		this.name = name;
+		this.notes.add(note);
 	}
 	
 	////////////////////////////////Getters, Setters
 
-	public Integer getId() {
-		return id;
+	public Tag(String name) {
+		this.name = name;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public long getId() {
+		return id;
 	}
 
 	public String getName() {
@@ -53,7 +59,7 @@ public class Tag {
 	public void setName(String name) {
 		this.name = name;
 	}
-/*
+
 	public Set<Note> getNotes() {
 		return notes;
 	}
@@ -61,5 +67,5 @@ public class Tag {
 	public void setNotes(Set<Note> notes) {
 		this.notes = notes;
 	}
-*/
+
 }

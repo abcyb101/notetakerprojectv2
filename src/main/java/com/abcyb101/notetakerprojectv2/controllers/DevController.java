@@ -26,6 +26,11 @@ public class DevController {
 		return ResponseEntity.ok("bye");
 	}
 	
+	@GetMapping("/message")
+	public String getMessage() {
+		return "Message";
+	}
+	
 	/*
 	 * To test this, when the security customization has not yet been implemented:
 	 * Postman GET  @ http://localhost:8089/api/v1/helloworld
